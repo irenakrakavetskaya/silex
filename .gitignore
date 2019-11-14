@@ -1,0 +1,5 @@
+/public/bundles/
+/var/cache/
+/var/logs/
+.env
+/vendor/
