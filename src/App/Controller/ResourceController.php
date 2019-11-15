@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 abstract class ResourceController extends BaseController
 {
@@ -68,7 +69,6 @@ abstract class ResourceController extends BaseController
             $message = sprintf('Entity not found: "%s" (id: %s)', $this->getEntityClassName(), $id);
             throw new ApiProblemException(ApiProblemException::TYPE_ENTITY_NOT_FOUND, Response::HTTP_BAD_REQUEST, $message);
         }
-
 
         return $entity;
     }

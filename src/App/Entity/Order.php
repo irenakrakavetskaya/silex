@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Hateoas\Configuration\Annotation as Hateoas;
-use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\JoinTable;
@@ -13,7 +11,8 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Symfony\Component\Validator\Constraints\DateTime;
-use App\Entity\User;
+use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as AssertPhoneNumber;
+use App\Entity\Book;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
@@ -36,25 +35,36 @@ class Order extends Entity
      * @ORM\Column(type="smallint", columnDefinition="ENUM(0, 1, 2)")
      * @Assert\NotBlank()
      */
-    private $status;
+    protected $status;
 
     /**
-     * @ORM\Column(type="datetimetz")
+     * @ORM\Column(type="datetime")
+     */
+    protected $datetime;
+
+    /**
+     * @ORM\Column(type="string")
      * @Assert\NotBlank()
-     * @Assert\DateTime()
      */
-    private $datetime;
+    protected $timezone;
 
     /**
-     * Many Orders have One User
-     * @ManyToOne(targetEntity="User", inversedBy="orders")
-     * @JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @AssertPhoneNumber
      */
-    private $user_id;
+    protected $phone;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     */
+    protected $address;
+
 
     /**
      * Many Orders have Many Books.
-     * @ManyToMany(targetEntity="Book",  mappedBy="orders")
+     * @ManyToMany(targetEntity="Book",  inversedBy="orders")
      * @JoinTable(name="books_orders")
      */
     protected $books;
@@ -93,6 +103,35 @@ class Order extends Entity
 
     public function setDatetime(string $datetime)
     {
-        $this->datetime = $datetime;
+        $this->datetime = (new \DateTime($datetime));
+    }
+
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address)
+    {
+        $this->address = $address;
+    }
+
+    public function getPhone(): string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone)
+    {
+        $this->phone = $phone;
+    }
+
+    public function addBook(Book $book = null)
+    {
+        $this->books->add($book);
+    }
+
+    public function getBooks() {
+        return $this->books;
     }
 }

@@ -4,11 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Entity\Author;
-use App\Entity\Manufacturer;
 use App\Exception\ApiProblemException;
-use Bezhanov\Silex\Routing\Route;
 use Hateoas\Representation\Factory\PagerfantaFactory;
-use Monolog\Logger;
+use Bezhanov\Silex\Routing\Route;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,20 +46,10 @@ class AuthorController extends ResourceController
             throw new ApiProblemException(ApiProblemException::TYPE_VALIDATION_ERROR);
         }
 
-        if($requestBody['book']){
-            foreach($requestBody['book'] as $k=>$v ){
-                $book= new Book();
-                $book->setTitle($requestBody['book'][$k]['title']);
-                $book->setDescription($requestBody['book'][$k]['description']);
-                $author->addBook($book);
-                $this->em->persist($book);
-            }
-        }
-
         $this->em->persist($author);
         $this->em->flush();
 
-        return $this->createApiResponse('Successfully created', Response::HTTP_CREATED, [
+        return $this->createApiResponse('The author was successfully created', Response::HTTP_CREATED, [
             'Location' => sprintf('/authors/%d', $author->getId())
         ]);
     }
@@ -72,7 +60,6 @@ class AuthorController extends ResourceController
     public function readAction(int $id)
     {
         $author = $this->findOrFail($id);
-        //$book->authors = $book->getAuthors();
 
         return $this->createApiResponse($author, Response::HTTP_OK);
     }
@@ -94,23 +81,6 @@ class AuthorController extends ResourceController
             throw new ApiProblemException(ApiProblemException::TYPE_VALIDATION_ERROR);
         }
 
-        if($requestBody['book']){
-            foreach($requestBody['book'] as $k=>$v ){
-                /*$book = //$em->find('Author', $requestBody['author'][$k]['id']);//get from authorContr
-                    //$author = new Author(4);
-                $title = $requestBody['book'][$k]['title'] ?? null;
-                $description = $requestBody['book'][$k]['description'] ?? null;
-                if ($title){
-                    $book->setName($title);
-                }
-                if ($description){
-                    $book->setSurname($description);
-                }
-                //$author->addAuthor($book);
-                $this->em->persist($book);*/
-            }
-        }
-
         $this->em->flush();
 
         return $this->createApiResponse($author, Response::HTTP_OK);
@@ -123,15 +93,14 @@ class AuthorController extends ResourceController
     {
         $author = $this->findOrFail($id);
 
-        //return print_r($author->books->get('id'));
-        if(!$author->getBooks()){
-            $this->em->remove($author);
-            $this->em->flush();
-
-            return $this->createApiResponse(null, Response::HTTP_OK);
+        if($author->getBooks()->count()){
+            return $this->createApiResponse('You should remove connected books first', Response::HTTP_OK);
         }
 
-        return $this->createApiResponse("You should remove connected books first", Response::HTTP_OK);
+        $this->em->remove($author);
+        $this->em->flush();
+
+        return $this->createApiResponse('The author was successfully removed', Response::HTTP_OK);
     }
 
     protected function getEntityClassName(): string

@@ -4,12 +4,13 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Hateoas\Configuration\Annotation as Hateoas;
-use JMS\Serializer\Annotation as Serializer;
+//use Hateoas\Configuration\Annotation as Hateoas;
+//use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\JoinTable;
 use App\Entity\Author;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BookRepository")
@@ -46,12 +47,13 @@ class Book extends Entity
      * Many books belongs to Many orders.
      * @ManyToMany(targetEntity="Order", inversedBy="books")
      * @JoinTable(name="books_orders")
+     * @Exclude
      */
     protected $orders;
 
     public function __construct() {
         $this->authors = new ArrayCollection();
-        //$this->orders = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     public function getId(): int
@@ -89,9 +91,14 @@ class Book extends Entity
         $this->authors->add($author);
     }
 
-    public function getAuthors()//is it needed?
+    public function getAuthors()
     {
         return $this->authors;
+    }
+
+    public function getOrders()
+    {
+        return $this->orders;
     }
 }
 

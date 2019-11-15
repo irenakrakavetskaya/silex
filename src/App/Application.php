@@ -2,10 +2,9 @@
 
 namespace App;
 
-use App\Controller\DiaryController;
 use App\Controller\AuthorController;
 use App\Controller\LoginController;
-use App\Controller\ManufacturerController;
+use App\Controller\OrderController;
 use App\Controller\ProfileController;
 use App\Controller\BookController;
 use App\ServiceProvider\JwtServiceProvider;
@@ -24,6 +23,7 @@ use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
+use Misd\PhoneNumberBundle\MisdPhoneNumberBundle;
 
 class Application extends \Silex\Application
 {
@@ -116,12 +116,10 @@ class Application extends \Silex\Application
         $app = $this;
 
         $resourceControllers = [
-            'app.controller.diary_controller' => DiaryController::class,
             'app.controller.book_controller' => BookController::class,
             'app.controller.author_controller' => AuthorController::class,
-            'app.controller.manufacturer_controller' => ManufacturerController::class,
+            'app.controller.order_controller' => OrderController::class,
             'app.controller.profile_controller' => ProfileController::class,
-
         ];
 
         foreach ($resourceControllers as $serviceId => $className) {

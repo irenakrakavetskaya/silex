@@ -4,12 +4,11 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Hateoas\Configuration\Annotation as Hateoas;
-use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\JoinTable;
 use App\Entity\Book;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AuthorRepository")
@@ -39,7 +38,7 @@ class Author extends Entity
      * @ManyToMany(targetEntity="Book", inversedBy="authors", cascade={"persist"})
      * @JoinTable(name="books_authors")
      */
-    public $books;//inversedBy mappedBy , "remove"
+    public $books;
 
     public function __construct() {
         $this->books = new ArrayCollection();
@@ -73,15 +72,5 @@ class Author extends Entity
     public function setSurname($surname)
     {
         $this->surname = $surname;
-    }
-
-    public function addBook(Book $book = null)
-    {
-        $this->books->add($book);
-    }
-
-    public function getBooks()//is it needed?
-    {
-        return $this->books;
     }
 }

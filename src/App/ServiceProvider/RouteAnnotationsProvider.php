@@ -9,7 +9,9 @@ use Silex\ControllerCollection;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Symfony\Component\Config\FileLocator;
 use Bezhanov\Silex\Routing\AnnotationClassLoader;
+use Bezhanov\Silex\Routing\AnnotationClassData;
 use Bezhanov\Silex\Routing\AnnotationDirectoryLoader;
+use Bezhanov\Silex\Routing\AnnotationMethodData;
 use Bezhanov\Silex\Routing\Route;
 
 class RouteAnnotationsProvider implements ServiceProviderInterface
@@ -44,7 +46,7 @@ class RouteAnnotationsProvider implements ServiceProviderInterface
 
             $fileLocator = new FileLocator();
             $reader = new AnnotationReader();
-            $classLoader = new AnnotationClassLoader($reader, $controllerCollection);
+            $classLoader = new AnnotationClassLoader($reader, $controllerCollection);//
             $directoryLoader = new AnnotationDirectoryLoader($fileLocator, $classLoader);
             $annotationClassDataCollection = $directoryLoader->load($container['routing.controller_dir']);
 

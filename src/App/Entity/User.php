@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Symfony\Component\Validator\Constraints\DateTime;
-use App\Entity\User;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -31,35 +31,31 @@ class User extends Entity
     /**
      * @ORM\Column(type="string", unique=true)
      */
-    private $username;
+    protected $username;
 
     /**
      * @ORM\Column(type="string")
+     * @Exclude
      */
-    private $password;
+    protected $password;
 
     /**
      * @ORM\Column(type="string")
+     * @Exclude
      */
-    private $token;
+    protected $token;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank()
      */
-    private $phone;
+    protected $phone;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank()
      */
-    private $address;
-
-    /**
-     * One user has many orders. This is the inverse side.
-     * @OneToMany(targetEntity="Order", mappedBy="user")
-     */
-    private $orders;
+    protected $address;
 
     public function __construct() {
         $this->orders = new ArrayCollection();
@@ -95,7 +91,7 @@ class User extends Entity
         $this->password = $password;
     }
 
-    public function getToken(): string
+   public function getToken(): string
     {
         return $this->token;
     }
@@ -103,25 +99,5 @@ class User extends Entity
     public function setToken(string $token)
     {
         $this->token = $token;
-    }
-
-    public function getPhone(): string
-    {
-        return $this->phone;
-    }
-
-    public function setPhone(string $phone)
-    {
-        $this->phone = $phone;
-    }
-
-    public function getAddress(): string
-    {
-        return $this->address;
-    }
-
-    public function setAddress(string $address)
-    {
-        $this->address = $address;
     }
 }
