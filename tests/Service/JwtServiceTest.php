@@ -63,6 +63,8 @@ class JwtServiceTest extends TestCase
         $this->assertEquals($this->getRefreshedJwtToken(), (string) $token);
     }
 
+
+
     private function mockUniqid($namespace, $value)
     {
         $builder = new MockBuilder();
@@ -93,7 +95,7 @@ class JwtServiceTest extends TestCase
         $mock->enable();
     }
 
-    private function getJwtToken()
+    public function getJwtToken()
     {
         return 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IjEifQ.eyJqdGkiOiIxIiwiaWF0IjoxMjMsIm5iZiI6MTIzLCJleHAiOjM3MjMsInVpZCI6MX0.LAgvnDqHPu7VUiX6MlmabcHSYBDJegkRthL9K-7p_To';
     }

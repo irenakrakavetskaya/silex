@@ -17,7 +17,7 @@ class OrderController extends ResourceController
     /**
      * @Route("/orders", methods={"GET"}, name="list_orders")
      */
-    public function indexAction(Request $request)  //perhaps delete pagination
+    public function indexAction(Request $request)
     {
         $queryBuilder = $this->em->createQueryBuilder()->select('f')->from($this->getEntityClassName(), 'f')->addOrderBy('f.id');
         $adapter = new DoctrineORMAdapter($queryBuilder);
@@ -56,7 +56,7 @@ class OrderController extends ResourceController
         $this->em->persist($order);
         $this->em->flush();
 
-        return $this->createApiResponse('Successfully created', Response::HTTP_CREATED, [
+        return $this->createApiResponse('The order was successfully created', Response::HTTP_CREATED, [
             'Location' => sprintf('/orders/%d', $order->getId())
         ]);
     }
@@ -104,13 +104,13 @@ class OrderController extends ResourceController
     /**
      * @Route("/orders/remove/{id}", methods={"POST"})
      */
-      public function deleteAction(int $id)
+      public function deleteAction(Request $request,int $id)
       {
           $order = $this->findOrFail($id);
           $this->em->remove($order);
           $this->em->flush();
 
-          return $this->createApiResponse(null, Response::HTTP_OK);
+          return $this->createApiResponse('The order was successfully removed', Response::HTTP_OK);
       }
 
     protected function getEntityClassName(): string

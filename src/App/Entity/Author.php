@@ -73,4 +73,9 @@ class Author extends Entity
     {
         $this->surname = $surname;
     }
+
+    public function getBooks()
+    {
+        return $this->books;
+    }
 }

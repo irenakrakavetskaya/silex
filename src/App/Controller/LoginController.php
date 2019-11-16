@@ -8,8 +8,9 @@ use App\Service\JwtService;
 use Bezhanov\Silex\Routing\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Lcobucci\JWT\Parser;
 
-class LoginController extends BaseController
+class LoginController extends BaseController //ResourceController //BaseController
 {
     /**
      * @var EntityManagerInterface
@@ -47,8 +48,12 @@ class LoginController extends BaseController
             throw new ApiProblemException(ApiProblemException::TYPE_INVALID_PASSWORD);
         }
 
+        $token = (string)$this->jwtTokenCreator->createToken($profile->getId());
+        $profile->setToken($token);
+        $this->em->flush();
+
         return $this->createApiResponse(json_encode([
-            'authToken' => (string) $this->jwtTokenCreator->createToken($profile->getId())
+            'authToken' => $token
         ]));
     }
 
@@ -61,9 +66,16 @@ class LoginController extends BaseController
         $requestBody = $this->extractRequestBody($request, $expectedParameters);
 
         $token = str_replace('Bearer ', '', $requestBody['token']);
+        $token = (new Parser)->parse($token);
+        $id = $token->getClaim('uid');
+        $profile = $this->em->find(Profile::class, $id);
+
+        $token = (string) $this->jwtTokenCreator->refreshToken($token);
+        $profile->setToken($token);
+        $this->em->flush();
 
         return $this->createApiResponse(json_encode([
-            'authToken' => (string) $this->jwtTokenCreator->refreshToken($token)
+            'authToken' => $token
         ]));
     }
 }

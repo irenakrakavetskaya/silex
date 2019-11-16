@@ -45,13 +45,9 @@ class ProfileController extends ResourceController
             throw new ApiProblemException(ApiProblemException::TYPE_VALIDATION_ERROR);
         }
 
-        // prevent users from changing the default username and password on the demo installation
-        if (getenv('DISABLE_PASSWORD_UPDATE')) {
-            throw new ApiProblemException(ApiProblemException::TYPE_PASSWORD_UPDATE_DISABLED);
-        }
         $this->em->flush();
 
-        return $this->createApiResponse(null, Response::HTTP_NO_CONTENT);
+        return $this->createApiResponse('The password was updated successfully', Response::HTTP_OK);
     }
 
 

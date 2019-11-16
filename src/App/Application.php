@@ -9,11 +9,9 @@ use App\Controller\ProfileController;
 use App\Controller\BookController;
 use App\ServiceProvider\JwtServiceProvider;
 use App\ServiceProvider\SerializerServiceProvider;
-//use Bezhanov\Silex\Routing\RouteAnnotationsProvider;
 use App\ServiceProvider\RouteAnnotationsProvider;
 use Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use Doctrine\Common\Annotations\AnnotationReader;
-use JDesrosiers\Silex\Provider\CorsServiceProvider;
 use Pimple\Container;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
@@ -23,7 +21,7 @@ use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
-use Misd\PhoneNumberBundle\MisdPhoneNumberBundle;
+
 
 class Application extends \Silex\Application
 {
@@ -105,9 +103,6 @@ class Application extends \Silex\Application
             ->register(new SerializerServiceProvider(), [
                 'serializer.cache_dir' => $app['cache']->getDirectory()
             ])
-            /*->register(new CorsServiceProvider(), [
-                'cors.allowOrigin' => $app['api_client_url']
-            ])*/
             ->register(new JwtServiceProvider());
     }
 

@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="profile")
+ * @ORM\Table(name="users")
  */
 class Profile extends Entity
 {
@@ -16,18 +16,23 @@ class Profile extends Entity
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", unique=true)
      */
-    private $username;
+    protected $username;
 
     /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
      */
-    private $password;
+    protected $password;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $token;
 
     public function getId(): int
     {
@@ -47,5 +52,10 @@ class Profile extends Entity
     public function setPassword(string $password)
     {
         $this->password = $password;
+    }
+
+    public function setToken(string $token)
+    {
+        $this->token = $token;
     }
 }

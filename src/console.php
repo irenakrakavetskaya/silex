@@ -14,7 +14,7 @@ use Symfony\Component\Console\Application;
 
 $app = require __DIR__.'/../src/app.php';
 
-$console = new Application('REST API', '0.1.0');
+$console = new Application('REST API', '1');
 $console->setDispatcher($app['dispatcher']);
 $console->add(new ClearCacheCommand($app['cache']->getDirectory()));
 
@@ -26,13 +26,13 @@ $app->register(
     ]
 );
 
-$faker = Factory::create();
-$faker->addProvider(new AliceProvider($faker));
-ProviderCollectionHelper::addAllProvidersTo($faker);
+//$faker = Factory::create();
+//$faker->addProvider(new AliceProvider($faker));
+//ProviderCollectionHelper::addAllProvidersTo($faker);
 
-$app->register(new FixturesServiceProvider($console), [
+/*$app->register(new FixturesServiceProvider($console), [
     'fixtures.faker_generator' => $faker,
-]);
+]);*/
 
 $app->boot();
 

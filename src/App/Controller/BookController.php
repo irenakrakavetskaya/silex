@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Book;
 use App\Entity\Author;
 use App\Exception\ApiProblemException;
-//use Bezhanov\Silex\Routing\Route;
+use Bezhanov\Silex\Routing\Route;
 use Hateoas\Representation\Factory\PagerfantaFactory;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -20,7 +20,7 @@ class BookController extends ResourceController
     public function indexAction(Request $request) //?title={title}
     {
         $title = $request->get('title');
-        if($title) {
+        if ($title) {
             $queryBuilder = $this->em->createQueryBuilder()
                 ->select('b')
                 ->from($this->getEntityClassName(), 'b')
@@ -28,15 +28,16 @@ class BookController extends ResourceController
                 ->setParameter('title', '%' . $title . '%')
                 ->addOrderBy('b.id');
         } else {
+
             $queryBuilder = $this->em->createQueryBuilder()->select('b')->from($this->getEntityClassName(), 'b')->addOrderBy('b.id');
         }
-            $adapter = new DoctrineORMAdapter($queryBuilder);
-            $pager = new Pagerfanta($adapter);
-            $pager->setCurrentPage($request->query->get('page', 1))->setMaxPerPage($request->query->get('limit', 30));
-            $factory = new PagerfantaFactory();
-            $collection = $factory->createRepresentation($pager, new \Hateoas\Configuration\Route('list_authors'));
+        $adapter = new DoctrineORMAdapter($queryBuilder);
+        $pager = new Pagerfanta($adapter);
+        $pager->setCurrentPage($request->query->get('page', 1))->setMaxPerPage($request->query->get('limit', 30));
+        $factory = new PagerfantaFactory();
+        $collection = $factory->createRepresentation($pager, new \Hateoas\Configuration\Route('list_authors'));
 
-            return $this->createApiResponse($collection, Response::HTTP_OK);
+        return $this->createApiResponse($collection, Response::HTTP_OK);
     }
 
     /**
@@ -46,9 +47,7 @@ class BookController extends ResourceController
     {
         $expectedParameters = ['title', 'description'];
         $requestBody = $request->request->all();
-
         $book = new Book();
-
         $book->fromArray($requestBody, $expectedParameters);
         $violations = $this->validator->validate($book);
 
@@ -59,7 +58,7 @@ class BookController extends ResourceController
         if ($requestBody['author']) {
             foreach ($requestBody['author'] as $k => $v) {
                 $author = $this->em->find(Author::class, $requestBody['author'][$k]['id']);
-                if($author){
+                if ($author) {
                     $book->addAuthor($author);
                 }
             }
@@ -68,9 +67,11 @@ class BookController extends ResourceController
         $this->em->persist($book);
         $this->em->flush();
 
-        return $this->createApiResponse('Successfully created', Response::HTTP_CREATED, [
+        return $this->createApiResponse('The book was successfully created', Response::HTTP_CREATED, [
             'Location' => sprintf('/books/%d', $book->getId())
         ]);
+
+
     }
 
     /**
@@ -79,7 +80,6 @@ class BookController extends ResourceController
     public function readAction(int $id)
     {
         $book = $this->findOrFail($id);
-        //$book->authors = $book->getAuthors();
 
         return $this->createApiResponse($book, Response::HTTP_OK);
     }
@@ -115,7 +115,7 @@ class BookController extends ResourceController
     /**
      * @Route("/books/remove/{id}", methods={"POST"})
      */
-    public function deleteAction(int $id)
+    public function deleteAction(Request $request, int $id)
     {
         $book = $this->findOrFail($id);
 
@@ -126,7 +126,7 @@ class BookController extends ResourceController
         $this->em->remove($book);
         $this->em->flush();
 
-        return $this->createApiResponse(null, Response::HTTP_OK);
+        return $this->createApiResponse('The book was successfully created', Response::HTTP_OK);
     }
 
     protected function getEntityClassName(): string

@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Book;
 use App\Entity\Author;
 use App\Exception\ApiProblemException;
 use Hateoas\Representation\Factory\PagerfantaFactory;
@@ -35,7 +34,7 @@ class AuthorController extends ResourceController
     public function createAction(Request $request)
     {
         $expectedParameters = ['name', 'surname'];
-        $requestBody =$request->request->all();
+        $requestBody = $request->request->all();
 
         $author = new Author();
 
@@ -89,11 +88,11 @@ class AuthorController extends ResourceController
     /**
      * @Route("/authors/remove/{id}", methods={"POST"})
      */
-    public function deleteAction(int $id)
+    public function deleteAction(Request $request, int $id)
     {
         $author = $this->findOrFail($id);
 
-        if($author->getBooks()->count()){
+        if ($author->getBooks()->count()) {
             return $this->createApiResponse('You should remove connected books first', Response::HTTP_OK);
         }
 
